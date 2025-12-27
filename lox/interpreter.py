@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from token_type import * 
+from .token_type import * 
 
 class Token:
     def __init__(self, lexeme):

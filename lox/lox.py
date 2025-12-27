@@ -1,8 +1,7 @@
 import sys
-import os
-from scanner import Scanner
-from parser import Parser
-from interpreter import Interpreter
+from .scanner import Scanner
+from .parser import Parser
+from .interpreter import Interpreter
 
 class Lox:
     def __init__(self):
@@ -11,7 +10,7 @@ class Lox:
 
     def main(self):
         if len(self.args) > 2:
-            print("Usage: python3 lox/lox.py lox/[script]")
+            print("Usage: python3 lox.lox lox/[script]")
         elif len(self.args) == 2:
             self.run_file(self.args[1])
         else:

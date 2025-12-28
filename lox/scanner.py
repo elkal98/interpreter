@@ -38,6 +38,8 @@ class Scanner:
             self.add_token(TokenType.SEMICOLON)
         elif char == '=':
             self.add_token(TokenType.EQUAL)
+        elif char == '==':
+            self.add_token(TokenType.EQUAL_EQUAL)
         elif char == '+':
             self.add_token(TokenType.PLUS)
         elif char == '*':
@@ -58,6 +60,10 @@ class Scanner:
             self.add_token(TokenType.GREATER_EQUAL)
         elif char == '<=':
             self.add_token(TokenType.LESS_EQUAL)
+        elif char == '.':
+            self.add_token(TokenType.DOT)
+        elif char == ',':
+            self.add_token(TokenType.COMMA)
         elif char == '"':
             self.string()
         elif char.isdigit():

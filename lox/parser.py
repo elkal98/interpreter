@@ -125,6 +125,6 @@ class Parser:
         while not self.is_at_end():
             if self.previous().token_type == TokenType.SEMICOLON:
                 return
-            if self.peek().token_type in (TokenType.VAR, TokenType.PRINT):
+            if self.peek().token_type in (TokenType.CLASS, TokenType.FUN, TokenType.VAR, TokenType.FOR, TokenType.IF, TokenType.WHILE, TokenType.PRINT, TokenType.RETURN):
                 return
             self.advance()

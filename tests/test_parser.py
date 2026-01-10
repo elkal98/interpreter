@@ -16,5 +16,3 @@ def test_binary_expression():
     assert expr.left.value == 1
     assert expr.operator.lexeme == "+"
     assert expr.right.value == 2
-
-    

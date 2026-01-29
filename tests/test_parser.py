@@ -1,6 +1,6 @@
 from lox.scanner import Scanner
 from lox.parser import Parser
-from lox.interpreter import Binary, Literal
+from lox.expr import Binary, Literal
 
 def parse_expr(source):
     tokens = Scanner(source).scan_tokens()

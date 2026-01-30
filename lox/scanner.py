@@ -37,9 +37,7 @@ class Scanner:
         elif char == ';':
             self.add_token(TokenType.SEMICOLON)
         elif char == '=':
-            self.add_token(TokenType.EQUAL)
-        elif char == '==':
-            self.add_token(TokenType.EQUAL_EQUAL)
+            self.add_token(TokenType.EQUAL_EQUAL if self.match('=') else TokenType.EQUAL)
         elif char == '+':
             self.add_token(TokenType.PLUS)
         elif char == '*':
@@ -49,17 +47,11 @@ class Scanner:
         elif char == '-':
             self.add_token(TokenType.MINUS)
         elif char == '!':
-            self.add_token(TokenType.BANG)
-        elif char == '!=':
-            self.add_token(TokenType.BANG_EQUAL)
+            self.add_token(TokenType.BANG_EQUAL if self.match('=') else TokenType.BANG)
         elif char == '>':
-            self.add_token(TokenType.GREATER)
+            self.add_token(TokenType.GREATER_EQUAL if self.match('=') else TokenType.GREATER)
         elif char == '<':
-            self.add_token(TokenType.LESS)
-        elif char == '>=':
-            self.add_token(TokenType.GREATER_EQUAL)
-        elif char == '<=':
-            self.add_token(TokenType.LESS_EQUAL)
+            self.add_token(TokenType.LESS_EQUAL if self.match('=') else TokenType.LESS)
         elif char == '.':
             self.add_token(TokenType.DOT)
         elif char == ',':
@@ -162,3 +154,11 @@ class Scanner:
 
     def is_at_end(self):
         return self.current >= len(self.source)
+    
+    def match(self, expected):
+        if self.is_at_end():
+            return False
+        if self.source[self.current] != expected:
+            return False
+        self.current += 1
+        return True

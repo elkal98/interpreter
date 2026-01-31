@@ -32,6 +32,7 @@ class Interpreter:
                 self.execute(stmt)
         finally:
             self.environment = previous
+    
     def visit_literal_expr(self, expr):
         return expr.value
 
@@ -52,6 +53,8 @@ class Interpreter:
         right = self.evaluate(expr.right)
         t = expr.operator.token_type
         if t == TokenType.PLUS:
+            if isinstance(left, str) or isinstance(right, str):
+                return self.stringify(left) + self.stringify(right)
             return left + right
         elif t == TokenType.MINUS:
             return left - right
@@ -80,7 +83,9 @@ class Interpreter:
         return self.environment.get(expr.name)
 
     def visit_assign_expr(self, expr):
-        value = self.evaluate(expr.value)
+        value = None
+        if expr.value is not None:
+            value = self.evaluate(expr.value)
         distance = self.locals.get(expr)
         if distance is not None:
             self.environment.assign_at(distance, expr.name, value)
@@ -116,6 +121,29 @@ class Interpreter:
             distance = self.locals[expr]
             return self.environment.get_at(distance, expr.keyword)
         return self.environment.get(expr.keyword)
+    
+    def visit_logical_expr(self, expr):
+        left = self.evaluate(expr.left)
+        if expr.operator.token_type == TokenType.OR:
+            if self.is_truthy(left):
+                return left
+        elif expr.operator.token_type == TokenType.AND:
+            if not self.is_truthy(left):
+                return left
+
+        return self.evaluate(expr.right)
+    
+    def visit_super_expr(self, expr):
+        superclass = self.environment.get("super")
+        if not isinstance(superclass, LoxClass):
+            raise RuntimeError(expr.keyword, "super must be a class.")
+            
+        obj = self.environment.get("this")
+        
+        method = superclass.find_method(expr.method.lexeme)
+        if method is None:
+            raise RuntimeError(expr.method, f"Undefined property '{expr.method.lexeme}'.")
+        return method.bind(obj)
 
     def visit_var_stmt(self, stmt):
         value = None
@@ -136,6 +164,17 @@ class Interpreter:
     def visit_block_stmt(self, stmt):
         self.execute_block(stmt.statements, Environment(self.environment))
         return None
+
+    def visit_if_stmt(self, stmt):
+        condition = self.evaluate(stmt.condition)
+        if condition:
+            self.execute(stmt.then_branch)
+        elif stmt.else_branch:
+            self.execute(stmt.else_branch)
+
+    def visit_while_stmt(self, stmt):
+        while self.evaluate(stmt.condition):
+            self.execute(stmt.body)
 
     def visit_function_stmt(self, stmt):
         function = LoxFunction(stmt, self.environment, False)

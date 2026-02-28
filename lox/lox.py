@@ -10,7 +10,7 @@ class Lox:
 
     def main(self):
         if len(self.args) > 2:
-            print("Usage: python3 lox.lox lox/[script]")
+            print("Usage: python3 -m lox.lox lox/[script]")
         elif len(self.args) == 2:
             self.run_file(self.args[1])
         else:
